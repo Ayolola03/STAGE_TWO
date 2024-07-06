@@ -118,3 +118,103 @@ class OrganisationListView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class OrganisationDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, org_id):
+        try:
+            organisation = Organisation.objects.get(org_id=org_id)
+            if organisation.users.filter(id=request.user.id).exists():
+                return Response(
+                    {
+                        "status": "success",
+                        "message": "Organisation retrieved successfully",
+                        "data": OrganisationSerializer(organisation).data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            return Response(
+                {
+                    "status": "Forbidden",
+                    "message": "You do not have permission to view this organisation",
+                    "statusCode": 403,
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        except Organisation.DoesNotExist:
+            return Response(
+                {
+                    "status": "Not Found",
+                    "message": "Organisation not found",
+                    "statusCode": 404,
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
+class OrganisationCreateView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = OrganisationSerializer(data=request.data)
+        if serializer.is_valid():
+            organisation = serializer.save()
+            organisation.users.add(request.user)
+            return Response(
+                {
+                    "status": "success",
+                    "message": "Organisation created successfully",
+                    "data": OrganisationSerializer(organisation).data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            {
+                "status": "Bad Request",
+                "message": "Client error",
+                "statusCode": 400,
+                "errors": serializer.errors,
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class AddUserToOrganisationView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, org_id):
+        user_id = request.data.get("userId")
+        try:
+            user = User.objects.get(user_id=user_id)
+            organisation = Organisation.objects.get(org_id=org_id)
+            if request.user in organisation.users.all():
+                organisation.users.add(user)
+                return Response(
+                    {
+                        "status": "success",
+                        "message": "User added to organisation successfully",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            return Response(
+                {
+                    "status": "Forbidden",
+                    "message": "You do not have permission to modify this organisation",
+                    "statusCode": 403,
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        except (User.DoesNotExist, Organisation.DoesNotExist):
+            return Response(
+                {
+                    "status": "Not Found",
+                    "message": "User or Organisation not found",
+                    "statusCode": 404,
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
