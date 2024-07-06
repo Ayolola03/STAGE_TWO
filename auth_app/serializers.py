@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import User, Organisation
 
-
+#This works to validate the information during signin or user registration
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -11,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
             "user_id": {"read_only": True},
         }
 
+    #Validation during registering
     def create(self, validated_data):
         user = User.objects.create_user(
             email=validated_data["email"],
@@ -21,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+    #Email validation
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")

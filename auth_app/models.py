@@ -33,7 +33,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, first_name, last_name, password, **extra_fields)
 
-
+#User Model
 class User(AbstractBaseUser, PermissionsMixin):
     user_id = models.CharField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255)
@@ -51,13 +51,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+    #This ensures the email address is taken as the first_name so user authentication works out well.
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
     def __str__(self):
         return self.email
 
-
+#Organisation Model
 class Organisation(models.Model):
     org_id = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     name = models.CharField(max_length=100)

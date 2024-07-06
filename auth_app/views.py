@@ -8,17 +8,17 @@ from .models import User, Organisation
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-
+#Handles User registration
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
 
-            # Ensure user is saved before creating token
+            # Ensure user is saved before creating token.
             user.save()
 
-            # Create an organization for the user
+            # Create an organization for the user.
             org_name = f"{user.first_name}'s Organisation"
             organisation = Organisation.objects.create(
                 name=org_name,
@@ -49,7 +49,7 @@ class RegisterView(APIView):
             status=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
 
-
+#Handles Logining in
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -59,6 +59,7 @@ class LoginView(APIView):
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
 
+            #The Response when login credentials are correct.
             return Response(
                 {
                     "status": "success",
@@ -71,6 +72,7 @@ class LoginView(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
+        #The Response when there's an issue logining in.
         return Response(
             {
                 "status": "Bad request",

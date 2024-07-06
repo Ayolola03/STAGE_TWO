@@ -9,6 +9,7 @@ from auth_app.models import User
 class TestAuthEndpoints:
     client = APIClient()
 
+    # It Should Register User Successfully with Default Organisation.
     def test_register_user_successfully(self):
         response = self.client.post(
             "/auth/register/",
@@ -29,6 +30,7 @@ class TestAuthEndpoints:
         assert data["data"]["user"]["first_name"] == "John"
         assert data["data"]["user"]["last_name"] == "Doe"
 
+    # It Should Log the user in successfully.
     def test_login_user_successfully(self):
         User.objects.create_user(
             email="login@example.com",
@@ -47,6 +49,7 @@ class TestAuthEndpoints:
         assert "accessToken" in data["data"]
         assert "refreshToken" in data["data"]
 
+    # It Should Fail If Required Fields Are Missing and return a 422 error.
     def test_register_missing_fields(self):
         response = self.client.post(
             "/auth/register/", data={"email": "missing@example.com"}
@@ -56,6 +59,7 @@ class TestAuthEndpoints:
         assert data["status"] == "Bad Request"
         assert "errors" in data
 
+    # It Should Fail if there’s Duplicate Email or UserID and return a 422 error.
     def test_register_duplicate_email(self):
         User.objects.create_user(
             email="duplicate@example.com",
