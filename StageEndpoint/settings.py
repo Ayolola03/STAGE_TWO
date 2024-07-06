@@ -85,9 +85,9 @@ WSGI_APPLICATION = "StageEndpoint.wsgi.application"
 
 DATABASES = {
     "default": dj_database_url.config(
+        default=os.getenv('DATABASE_URL',"postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb"),
         conn_max_age=600,
         conn_health_checks=True,
-        DATABASE_URL="postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb",
     ),
 }
 
