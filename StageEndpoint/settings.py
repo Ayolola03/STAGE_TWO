@@ -88,17 +88,15 @@ if database_url.startswith("postgres://"):
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
-    "default": dj_database_url.config(
-        default=database_url,
+    "default": dj_database_url.parse(
+        "postgresql://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb",
         conn_max_age=600,
         conn_health_checks=True,
     ),
 }
 
-
-# Password validation
+Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
