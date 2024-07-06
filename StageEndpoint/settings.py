@@ -84,13 +84,13 @@ WSGI_APPLICATION = "StageEndpoint.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(
+    "default": dj_database_url.config(
         conn_max_age=600,
         conn_health_checks=True,
+        DATABASE_URL="postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb",
     ),
 }
 
-DATABASE_URL="postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
