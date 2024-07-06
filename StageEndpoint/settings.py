@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,10 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#=44)hfyl*pgd=8-qtnt-+_p8kt-89%ha$2*+9zq!m8#mz&&n7"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").split(
+    ","
+)
 
 # Application definition
 
@@ -83,16 +84,13 @@ WSGI_APPLICATION = "StageEndpoint.wsgi.application"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "hngdb",
-        "USER": "postgres",
-        "PASSWORD": "kayla123",
-        "HOST": "localhost",  # Set to your database host
-        "PORT": "5432",  # Default port for PostgreSQL
-    }
+    'default': dj_database_url.config(
+        conn_max_age=600,
+        conn_health_checks=True,
+    ),
 }
 
+DATABASE_URL="postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
