@@ -15,6 +15,9 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
 
+            # Ensure user is saved before creating token
+            user.save()
+
             # Create an organization for the user
             org_name = f"{user.first_name}'s Organisation"
             organisation = Organisation.objects.create(
