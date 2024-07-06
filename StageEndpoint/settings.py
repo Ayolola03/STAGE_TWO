@@ -79,13 +79,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "StageEndpoint.wsgi.application"
 
+database_url = os.getenv(
+    "DATABASE_URL",
+    "postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb"
+)
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.getenv('DATABASE_URL',"postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb"),
+        default=database_url,
         conn_max_age=600,
         conn_health_checks=True,
     ),
