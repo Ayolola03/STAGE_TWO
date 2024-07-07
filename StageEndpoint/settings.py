@@ -83,9 +83,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "StageEndpoint.wsgi.application"
 
 
-DATABASE_URL = 'postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb'
+DATABASE_URL =postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb
 DATABASES = {
-    "default": dj_database_url.parse("DATABASE_URL"),
+    "default": dj_database_url.parse(postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb),
 }
 
 
