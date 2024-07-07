@@ -1,3 +1,4 @@
+
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,7 +9,7 @@ from .models import User, Organisation
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# Handles user registration
+#Handles User registration
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -49,7 +50,7 @@ class RegisterView(APIView):
             status=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
 
-# Handles login
+#Handles Logining in
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -59,7 +60,7 @@ class LoginView(APIView):
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
 
-            # The Response when login credentials are correct.
+            #The Response when login credentials are correct.
             return Response(
                 {
                     "status": "success",
@@ -72,7 +73,7 @@ class LoginView(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
-        # The Response when there's an issue logging in.
+        #The Response when there's an issue logining in.
         return Response(
             {
                 "status": "Bad request",
@@ -81,7 +82,6 @@ class LoginView(APIView):
             },
             status=status.HTTP_401_UNAUTHORIZED,
         )
-
 
 
 class UserDetailView(APIView):
@@ -224,3 +224,4 @@ class AddUserToOrganisationView(APIView):
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
+
