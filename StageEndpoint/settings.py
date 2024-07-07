@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 from datetime import timedelta
-import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,9 +27,11 @@ SECRET_KEY = "django-insecure-#=44)hfyl*pgd=8-qtnt-+_p8kt-89%ha$2*+9zq!m8#mz&&n7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]").split(
-    ","
-)
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh']
+# Or * to allow all
+ALLOWED_HOSTS = ['*']
+
+
 
 # Application definition
 
@@ -79,22 +81,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "StageEndpoint.wsgi.application"
 
-database_url = os.getenv(
-    "DATABASE_URL",
-    "postgres://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb"
-)
-if database_url.startswith("postgres://"):
-    database_url = database_url.replace("postgres://", "postgresql://", 1)
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 DATABASES = {
-    "default": dj_database_url.parse(
-        "postgresql://postgres:x59fNMykDiKT@ep-snowy-bar-a20znql0.eu-central-1.pg.koyeb.app/koyebdb",
-        conn_max_age=600,
-        conn_health_checks=True,
-    ),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PORT': os.environ.get("DB_PORT"),
+    }
 }
+
+
 
 Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
