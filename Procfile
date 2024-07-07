@@ -1,4 +1,0 @@
-web: gunicorn StageEndpoint.wsgi
-
-
-
