@@ -73,7 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Organisation(models.Model):
-    org_id = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
+    orgId = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     users = models.ManyToManyField(User, related_name="organisations")

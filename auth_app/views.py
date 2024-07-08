@@ -20,7 +20,7 @@ class RegisterView(APIView):
             user.save()
 
             # Create an organization for the user.
-            org_name = f"{user.first_name}'s Organisation"
+            org_name = f"{user.firstName}'s Organisation"
             organisation = Organisation.objects.create(
                 name=org_name,
                 description="Default organisation",
@@ -88,9 +88,9 @@ class UserDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, user_id):
+    def get(self, request, userId):
         try:
-            user = User.objects.get(user_id=user_id)
+            user = User.objects.get(userId=userId)
             return Response(
                 {
                     "status": "success",
@@ -130,9 +130,9 @@ class OrganisationDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, org_id):
+    def get(self, request, orgId):
         try:
-            organisation = Organisation.objects.get(org_id=org_id)
+            organisation = Organisation.objects.get(orgId=orgId)
             if organisation.users.filter(id=request.user.id).exists():
                 return Response(
                     {
@@ -193,11 +193,11 @@ class AddUserToOrganisationView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, org_id):
-        user_id = request.data.get("userId")
+    def post(self, request, orgId):
+        userId = request.data.get("userId")
         try:
-            user = User.objects.get(user_id=user_id)
-            organisation = Organisation.objects.get(org_id=org_id)
+            user = User.objects.get(userId=userId)
+            organisation = Organisation.objects.get(orgId=orgId)
             if request.user in organisation.users.all():
                 organisation.users.add(user)
                 return Response(
