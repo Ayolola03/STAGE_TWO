@@ -12,7 +12,7 @@ class TestAuthEndpoints:
     # It Should Register User Successfully with Default Organisation.
     def test_register_user_successfully(self):
         response = self.client.post(
-            "/auth/register/",
+            "/auth/register",
             data={
                 "email": "test@example.com",
                 "firstName": "John",
@@ -39,7 +39,7 @@ class TestAuthEndpoints:
             password="password123",
         )
         response = self.client.post(
-            "/auth/login/",
+            "/auth/login",
             data={"email": "login@example.com", "password": "password123"},
         )
         assert response.status_code == 200
@@ -52,7 +52,7 @@ class TestAuthEndpoints:
     # It Should Fail If Required Fields Are Missing and return a 422 error.
     def test_register_missing_fields(self):
         response = self.client.post(
-            "/auth/register/", data={"email": "missing@example.com"}
+            "/auth/register", data={"email": "missing@example.com"}
         )
         assert response.status_code == 422
         data = response.json()
@@ -68,7 +68,7 @@ class TestAuthEndpoints:
             password="password123",
         )
         response = self.client.post(
-            "/auth/register/",
+            "/auth/register",
             data={
                 "email": "duplicate@example.com",
                 "firstName": "New",
