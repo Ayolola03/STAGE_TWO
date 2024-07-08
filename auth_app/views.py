@@ -44,10 +44,10 @@ class RegisterView(APIView):
             {
                 "status": "Bad Request",
                 "message": "Registration unsuccessful",
-                "statusCode": 422,
+                "statusCode": 400,
                 "errors": serializer.errors,
             },
-            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 #Handles Logining in
