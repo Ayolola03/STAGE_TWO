@@ -10,20 +10,32 @@ import uuid
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, first_name, last_name, password=None, **extra_fields):
+
+    def create_user(
+        self, email, firstName, lastName, phone=None, password=None, **extra_fields
+    ):
         if not email:
             raise ValueError("The Email field must be set")
+        if not firstName:
+            raise ValueError("The First Name field must be set")
+        if not lastName:
+            raise ValueError("The Last Name field must be set")
+
         email = self.normalize_email(email)
         user = self.model(
-            email=email, first_name=first_name, last_name=last_name, **extra_fields
+            email=email,
+            firstName=firstName,
+            lastName=lastName,
+            phone=phone,
+            **extra_fields
         )
-        user.user_id = str(uuid.uuid4())
+        user.userId = str(uuid.uuid4())
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(
-        self, email, first_name, last_name, password=None, **extra_fields
+        self, email, firstName, lastName, phone=None, password=None, **extra_fields
     ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
@@ -31,13 +43,15 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
-        return self.create_user(email, first_name, last_name, password, **extra_fields)
+        return self.create_user(
+            email, firstName, lastName, phone, password, **extra_fields
+        )
 
-#User Model
+
 class User(AbstractBaseUser, PermissionsMixin):
-    user_id = models.CharField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    userId = models.CharField(max_length=255, unique=True)
+    firstName = models.CharField(max_length=255)
+    lastName = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -51,14 +65,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    #This ensures the email address is taken as the first_name so user authentication works out well.
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["firstName", "lastName"]
 
     def __str__(self):
         return self.email
 
-#Organisation Model
+
 class Organisation(models.Model):
     org_id = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     name = models.CharField(max_length=100)

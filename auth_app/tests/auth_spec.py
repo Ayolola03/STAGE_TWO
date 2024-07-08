@@ -15,8 +15,8 @@ class TestAuthEndpoints:
             "/auth/register/",
             data={
                 "email": "test@example.com",
-                "first_name": "John",
-                "last_name": "Doe",
+                "firstName": "John",
+                "lastName": "Doe",
                 "password": "password123",
                 "phone":"09095209660"
             },
@@ -27,15 +27,15 @@ class TestAuthEndpoints:
         assert data["message"] == "Registration successful"
         assert "accessToken" in data["data"]
         assert "refreshToken" in data["data"]
-        assert data["data"]["user"]["first_name"] == "John"
-        assert data["data"]["user"]["last_name"] == "Doe"
+        assert data["data"]["user"]["firstName"] == "John"
+        assert data["data"]["user"]["lastName"] == "Doe"
 
     # It Should Log the user in successfully.
     def test_login_user_successfully(self):
         User.objects.create_user(
             email="login@example.com",
-            first_name="Login",
-            last_name="User",
+            firstName="Login",
+            lastName="User",
             password="password123",
         )
         response = self.client.post(
@@ -63,16 +63,16 @@ class TestAuthEndpoints:
     def test_register_duplicate_email(self):
         User.objects.create_user(
             email="duplicate@example.com",
-            first_name="Duplicate",
-            last_name="User",
+            firstName="Duplicate",
+            lastName="User",
             password="password123",
         )
         response = self.client.post(
             "/auth/register/",
             data={
                 "email": "duplicate@example.com",
-                "first_name": "New",
-                "last_name": "User",
+                "firstName": "New",
+                "lastName": "User",
                 "password": "newpassword123",
             },
         )
