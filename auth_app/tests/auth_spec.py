@@ -54,7 +54,7 @@ class TestAuthEndpoints:
         response = self.client.post(
             "/auth/register", data={"email": "missing@example.com"}
         )
-        assert response.status_code == 400
+        assert response.status_code == 422
         data = response.json()
         assert data["status"] == "Bad Request"
         assert "errors" in data
@@ -76,7 +76,7 @@ class TestAuthEndpoints:
                 "password": "newpassword123",
             },
         )
-        assert response.status_code == 400
+        assert response.status_code == 422
         data = response.json()
         assert data["status"] == "Bad Request"
         assert "errors" in data
