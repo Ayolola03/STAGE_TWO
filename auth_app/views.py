@@ -190,8 +190,9 @@ class OrganisationCreateView(APIView):
         )
 
 
+
 class AddUserToOrganisationView(APIView):
-    authentication_classes = [JSONWebTokenAuthentication]
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, orgId):
