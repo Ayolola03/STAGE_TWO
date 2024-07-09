@@ -1,3 +1,4 @@
+
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,18 +9,18 @@ from .models import User, Organisation
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-
-# Handles User registration
+#Handles User registration
 class RegisterView(APIView):
-
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.set_password(request.data["password"])
+
+            # Ensure user is saved before creating token.
             user.save()
 
-            org_name = f"{user.first_name}'s Organisation"
+            # Create an organization for the user.
+            org_name = f"{user.firstName}'s Organisation"
             organisation = Organisation.objects.create(
                 name=org_name,
                 description="Default organisation",
@@ -33,26 +34,23 @@ class RegisterView(APIView):
                     "message": "Registration successful",
                     "data": {
                         "accessToken": str(refresh.access_token),
+                        "refreshToken": str(refresh),
                         "user": UserSerializer(user).data,
                     },
                 },
                 status=status.HTTP_201_CREATED,
             )
-        else:
-            errors = []
-            for field, messages in serializer.errors.items():
-                for message in messages:
-                    errors.append({"field": field, "message": message})
+        return Response(
+            {
+                "status": "Bad Request",
+                "message": "Registration unsuccessful",
+                "statusCode": 422,
+                "errors": serializer.errors,
+            },
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
 
-            return Response(
-                {
-                    "errors": errors,
-                },
-                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            )
-
-
-# Handles Logining in
+#Handles Logining in
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -228,3 +226,4 @@ class AddUserToOrganisationView(APIView):
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
+
