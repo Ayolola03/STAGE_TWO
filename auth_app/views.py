@@ -1,4 +1,3 @@
-
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -9,7 +8,7 @@ from .models import User, Organisation
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-#Handles User registration
+# Handles User registration
 class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -50,7 +49,7 @@ class RegisterView(APIView):
             status=status.HTTP_422_UNPROCESSABLE_ENTITY,
         )
 
-#Handles Logining in
+# Handles Logining in
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -192,13 +191,13 @@ class OrganisationCreateView(APIView):
 
 
 class AddUserToOrganisationView(APIView):
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [JSONWebTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request, orgId):
         userId = request.data.get("userId")
         try:
-            user = User.objects.get(userId=userId)
+            user = User.objects.get(id=userId)  # Adjust field name if necessary
             organisation = Organisation.objects.get(orgId=orgId)
             if request.user in organisation.users.all():
                 organisation.users.add(user)
@@ -217,13 +216,21 @@ class AddUserToOrganisationView(APIView):
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
-        except (User.DoesNotExist, Organisation.DoesNotExist):
+        except User.DoesNotExist:
             return Response(
                 {
                     "status": "Not Found",
-                    "message": "User or Organisation not found",
+                    "message": "User not found",
                     "statusCode": 404,
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
-
+        except Organisation.DoesNotExist:
+            return Response(
+                {
+                    "status": "Not Found",
+                    "message": "Organisation not found",
+                    "statusCode": 404,
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
