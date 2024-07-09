@@ -120,7 +120,9 @@ class OrganisationListView(APIView):
             {
                 "status": "success",
                 "message": "Organisations retrieved successfully",
-                "data": OrganisationSerializer(organisations, many=True).data,
+                "data": {
+                    "organisations":OrganisationSerializer(organisations, many=True).data,
+                    }
             },
             status=status.HTTP_200_OK,
         )
