@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
     organisations = OrganisationSerializer(many=True, read_only=True)
     class Meta:
         model = User
-        fields = ["userId", "firstName", "lastName", "email", "password", "phone"]
+        fields = ["userId", "firstName", "lastName", "email", "password", "phone", "organisations"]
         extra_kwargs = {
             "password": {"write_only": True},
             "userId": {"read_only": True},
