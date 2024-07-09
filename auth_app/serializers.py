@@ -1,7 +1,16 @@
 from rest_framework import serializers
 from .models import User, Organisation
 
+
+class OrganisationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Organisation
+        fields = ["orgId", "name", "description"]
+        extra_kwargs = {"orgId": {"read_only": True}}
+
+
 class UserSerializer(serializers.ModelSerializer):
+    organisations = OrganisationSerializer(many=True, read_only=True)
     class Meta:
         model = User
         fields = ["userId", "firstName", "lastName", "email", "password", "phone"]
@@ -29,10 +38,3 @@ class UserSerializer(serializers.ModelSerializer):
         if User.objects.filter(userId=value).exists():
             raise serializers.ValidationError("A user with this ID already exists.")
         return value
-
-
-class OrganisationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Organisation
-        fields = ["orgId", "name", "description"]
-        extra_kwargs = {"orgId": {"read_only": True}}
